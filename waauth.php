@@ -92,55 +92,55 @@ class plgAuthenticationWaAuth extends JPlugin
       $grp_audax_homologations = $this->params->get('grp_audax_homologations'); /* Group to add members in "Homologation Admins" WA Group to */
       
       JLog::add('Validate credentials :' . $credentials['username'],  JLog::INFO, 'plg_waauth');
-	    try {
-	      $waApiClient = WaApiClient::getInstance( $wa_accountId, $wa_clientId, $wa_clientSecret );
-		    $waApiClient->initTokenByContactCredentials($credentials['username'], $credentials['password']);
-	    } catch (Exception $e) {
-	      $response->status = JAuthentication::STATUS_FAILURE;
-  	    $response->error_message = "Can't authenticate user: " . $e->getMessage();
-  	    JFactory::getApplication()->enqueueMessage("Can't authenticate user:" . $e->getMessage());
+      try {
+      	$waApiClient = WaApiClient::getInstance( $wa_accountId, $wa_clientId, $wa_clientSecret );
+      	$waApiClient->initTokenByContactCredentials($credentials['username'], $credentials['password']);
+      } catch (Exception $e) {
+      	$response->status = JAuthentication::STATUS_FAILURE;
+      	$response->error_message = "Can't authenticate user: " . $e->getMessage();
+      	JFactory::getApplication()->enqueueMessage("Can't authenticate user:" . $e->getMessage());
         JLog::add('Validate credentials :' . $credentials['username'] . ' Result: ' . $e->getMessage() ,  JLog::INFO, 'plg_waauth');
-  	    return false;
-  	  }
-	    try { 
-        JLog::add('Validate credentials :' . $credentials['username'] . ' Result: OK',  JLog::INFO, 'plg_waauth');
-		    $queryParams = array(
-			    '$async' => 'false' // execute request synchronously
-	      ); 
-	   	  $url = $waApiClient->accountURL . '/contacts/me?' . http_build_query($queryParams);
-	      $contact = $waApiClient->makeRequest($url);
-	      $waApiClientApp = WaApiClient::getInstance( $wa_accountId, $wa_clientId, $wa_clientSecret );
-	   	  $waApiClientApp->initTokenByApiKey($wa_apiKey); 
-	      $url = $contact["Url"]; 
-	  	  $contact = $waApiClientApp->makeRequest( $url ) ;
-	    } catch (Exception $e) {
-	      $response->status = JAuthentication::STATUS_FAILURE;
-	      $response->error_message = "Can't get user details: " . $e->getMessage();
-	      JFactory::getApplication()->enqueueMessage("Can't retrieve user details: " . $e->getMessage());
-	      JLog::add('Get user details :' . $credentials['username'] . ' Result: ' . $e->getMessage() ,  JLog::INFO, 'plg_waauth');
-	      return false;
-	    }
-	
-    	// Build array of field values. This is just to try and make it easy to use the WA data 
-    	foreach( $contact['FieldValues'] as $Field ) {
-    	  if ( is_array($Field['Value']) ) {
-    	    if ( isset( $Field['Value']['Label'] ) ) {
-    	      $val = $Field['Value']['Label'];
-          } else {
-            $val = array();
-            foreach( $Field['Value'] as $Value ) {
-              array_push( $val, $Value['Label'] );
-            }
-          }
-        } else {
-          val = $Field['Value'];
-    	  }
-    	  $uservals[$Field['FieldName']] = $val;
+        return false;
       }
-    	if ( isset($contact['MembershipLevel']) && is_array($contact['MembershipLevel']) && isset($contact['MembershipLevel']['Name']) ){
+      try { 
+        JLog::add('Validate credentials :' . $credentials['username'] . ' Result: OK',  JLog::INFO, 'plg_waauth');
+	$queryParams = array(
+		'$async' => 'false' // execute request synchronously
+	); 
+	$url = $waApiClient->accountURL . '/contacts/me?' . http_build_query($queryParams);
+	$contact = $waApiClient->makeRequest($url);
+	$waApiClientApp = WaApiClient::getInstance( $wa_accountId, $wa_clientId, $wa_clientSecret );
+	$waApiClientApp->initTokenByApiKey($wa_apiKey); 
+	$url = $contact["Url"]; 
+	$contact = $waApiClientApp->makeRequest( $url ) ;
+      } catch (Exception $e) {
+      	$response->status = JAuthentication::STATUS_FAILURE;
+	$response->error_message = "Can't get user details: " . $e->getMessage();
+	JFactory::getApplication()->enqueueMessage("Can't retrieve user details: " . $e->getMessage());
+	JLog::add('Get user details :' . $credentials['username'] . ' Result: ' . $e->getMessage() ,  JLog::INFO, 'plg_waauth');
+	return false;
+      }
+      
+      // Build array of field values. This is just to try and make it easy to use the WA data 
+      foreach( $contact['FieldValues'] as $Field ) {
+      	if ( is_array($Field['Value']) ) {
+      		if ( isset( $Field['Value']['Label'] ) ) {
+      			$val = $Field['Value']['Label'];
+      		} else {
+            		$val = array();
+            		foreach( $Field['Value'] as $Value ) {
+            			array_push( $val, $Value['Label'] );
+            		}
+      		}
+        } else {
+        	val = $Field['Value'];
+        }
+        $uservals[$Field['FieldName']] = $val;
+      } /* end foreach */
+      if ( isset($contact['MembershipLevel']) && is_array($contact['MembershipLevel']) && isset($contact['MembershipLevel']['Name']) ){
     	  $uservals['Membership Description'] = $contact['MembershipLevel']['Name']; 
-    	}
-    	if ( $uservals['Deceased?'] == 'Yes' or $uservals['Suspended member'] == '1') {
+      }
+      if ( $uservals['Deceased?'] == 'Yes' or $uservals['Suspended member'] == '1') {
     	  $response->status = JAuthentication::STATUS_EXPIRED;
     	  JFactory::getApplication()->enqueueMessage("Account has expired, login not allowed.");
     	  return;
@@ -148,46 +148,46 @@ class plgAuthenticationWaAuth extends JPlugin
       $dateDue = new DateTime($uservals['Renewal due']);
       $dateNow = new DateTime();
       $response->username = $uservals['Member ID'];
-	    $response->fullname = $uservals['First name'] . " " . $uservals['Last name'];
-	    $response->email = $uservals['e-Mail'];
-	    $record = JUser::getInstance(); // Bring the user in line with the rest of the system
-    	if ( $id = intval(JUserHelper::getUserId($response->username) ) ) {
+      $response->fullname = $uservals['First name'] . " " . $uservals['Last name'];
+      $response->email = $uservals['e-Mail'];
+      $record = JUser::getInstance(); // Bring the user in line with the rest of the system
+      if ( $id = intval(JUserHelper::getUserId($response->username) ) ) {
     		$record->load($id);
     		$record->setParam('email', $response->email );
     		$record->setParam('name', $response->fullname ); 
     		$record->save();
-    	} else {
-    	  $record->set('username', $response->username );
+      } else {
+      		$record->set('username', $response->username );
     		$record->set('email', $response->email );
     		$record->set('name', $response->fullname );
     		$record->set('password_clear',  $credentials['password'] );
-        $configUsers = JComponentHelper::getParams('com_users');
-        $defaultUserGroup = $configUsers->get('new_usertype', 2);
+        	$configUsers = JComponentHelper::getParams('com_users');
+        	$defaultUserGroup = $configUsers->get('new_usertype', 2);
     		$record->set('groups', array($defaultUserGroup));
     		$record->save();
     		$id = intval(JUserHelper::getUserId($response->username) );
     		$record->load($id);
-    	}
+      }
 
       
     	if ( $uservals['Membership status'] != 'Lapsed' && (($uservals['Renewal due'] != null && $dateNow < $dateDue) || $uservals['Membership Description'] == 'Life Membership' ) ) { 
     	  /* Members are not Lapsed status, and have a future renewal date ( but don't check for Life Members */ 
-        JUserHelper::addUserToGroup($id, $grp_audax);
+        	JUserHelper::addUserToGroup($id, $grp_audax);
     		JUserHelper::removeUserFromGroup($id, $grp_audax_nonmember);
     		if ( isset($uservals['Group participation']) && is_array($uservals['Group participation']) ){
     		  if ( in_array( 'Homologation Admin', $uservals['Group participation'] ) ) {
     		    JUserHelper::addUserToGroup($id, $grp_audax_homologations);
-          } else {
-            JUserHelper::removeUserFromGroup($id, $grp_audax_homologations);
-          }
-          if ( in_array( 'Ride Organisers', $uservals['Group participation'] ) ) {
-            JUserHelper::addUserToGroup($id, $grp_audax_rideorganiser);
-          } else {
-    		    JUserHelper::removeUserFromGroup($id, $grp_audax_rideorganiser);
-          } 
-        } /* end if Group particpation... set WA groups */
-      } else {
-        / * Remove non-curren members from the member group + any other groups we've defined. Add them to a non-member group */
+    		  } else {
+    		    JUserHelper::removeUserFromGroup($id, $grp_audax_homologations);
+    		  }
+	          if ( in_array( 'Ride Organisers', $uservals['Group participation'] ) ) {
+	            JUserHelper::addUserToGroup($id, $grp_audax_rideorganiser);
+	          } else {
+	            JUserHelper::removeUserFromGroup($id, $grp_audax_rideorganiser);
+	          } 
+        	} /* end if Group particpation... set WA groups */
+      	} else {
+        	/ * Remove non-current members from the member group + any other groups we've defined. Add them to a non-member group */
     		JUserHelper::removeUserFromGroup($id, $grp_audax);
     		JUserHelper::addUserToGroup($id, $grp_audax_nonmember);
     		JUserHelper::removeUserFromGroup($id, $grp_audax_rideorganiser); 
@@ -196,9 +196,9 @@ class plgAuthenticationWaAuth extends JPlugin
     	}
     	
     	// Force reload from database - this seems necessary, dunno why...
-	    $user = JFactory::getUser($id);
-	    $session = JFactory::getSession();
-	    $session->set('user', new JUser($user->id));
+    	$user = JFactory::getUser($id);
+	$session = JFactory::getSession();
+	$session->set('user', new JUser($user->id));
 
       // This code just sets some profiel variables but is dependent upon the variable names in WA
     	$db2 = &JFactory::getDBO();
