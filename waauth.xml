@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.3" type="plugin" group="authentication">
+    <name>Authentication - WaAuth</name>
+    <author>Joomla! Documentation Project</author>
+    <creationDate>May 30, 2007</creationDate>
+    <copyright>(C) 2005 - 2013 Open Source Matters. All rights reserved.</copyright>
+    <license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+    <authorEmail>ian.maclennan@help.joomla.org</authorEmail>
+    <authorUrl>www.joomla.org</authorUrl>
+    <version>3.3</version>
+    <description>WildApricot Authentication</description>
+    <files>
+        <filename plugin="waauth">waauth.php</filename>
+    </files>
+  <config>
+  <fields name="params">
+  <fieldset name="basic" label="Connection options">
+  <field name="backend_login" type="radio" default="1" description="Enable Backend Login" label="Backend Login">
+  <option value="0">No</option> 
+  <option value="1">Yes</option> 
+  </field>
+  <field name="wa_account" type="number" description="Account Number with Wild Apricot" default="" label="WA Account ID" size="20" required="true" /> 
+  <field name="wa_clientId" type="text" description="API Client ID" default="" label="WA Client ID" size="20" required="true"/> 
+  <field name="wa_clientSecret" type="password" description="API Client Secret" default="" label="WA Client Secret" size="40" required="true"/> 
+  <field name="wa_apiKey" type="password" description="API Key" default="" label="WA API Key" size="40" required="true"/>
+
+<field name="group_audax_member" type="usergroup"
+        label="Member Group"
+        description="Group which members are to be added to. Authentication checks membership and will add/delete this group."  
+        multiple="false" /> 
+<field name="group_audax_nonmember" type="usergroup"
+        label="NonMember Group"
+        description="Group which unfinancial (expired) members are to be added to. Authentication checks membership and will add/delete this group." 
+        multiple="false" /> 
+<field name="grp_audax_rideorganiser" type="usergroup"
+        label="Ride Organiser Group"
+        description="Group which ride organisers will be added to." 
+        multiple="false" /> 
+<field name="grp_audax_homologations" type="usergroup"
+        label="Audax Homologation Admins Groups"
+        description="Group which homologation admins will be added to." 
+        multiple="false" />  
+
+  </fieldset>
+  </fields>
+  </config>
+  </extension>
