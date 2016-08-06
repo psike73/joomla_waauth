@@ -1,17 +1,19 @@
 # joomla_waauth
 WildApricot Authentication Module for Joomla
 
-This was completely based on the code from external auth module for Joomla and highly customised for the Audax Australia cycling club. It uses the WildApricot member ID number as the Joomla ID and we use the plugin users_same_email as WA users may have no e-mail address sp "duplicate" joomla usernames would result. This should allow members to login with e-mail address, or if they don't have an e-mail address then the Joomla ID number.
+This was completely based on the code from external auth module for Joomla and highly customised for a specific club. It uses the WildApricot member ID number as the Joomla username. WildApricot members should be able to login with the e-mail address they registered with WildApricot and their WildApricot password.
 
-Also has code to add the user to a group or remove from a group based on membership status.
+I'm not a Joomla expert or a PHP expert so you should check things for yourself. It's a good start though.
 
-We also use the WildApricot Groups feature. The example code checks if the member is Groups "Ride Organisers" pr "Homologation Admins" and if so will add/remote the Joomla user into a configurable Joomla group. This needs code modification as the string names are hard coded.
-
-Some of the WildApricot contact veriables are copied and set in the Joomla profile (for example address1, city etc). This will also probably need code customisation.
+##Features##
+- Add/remove Joomla user to a "members" or "nonmembers" group based upon the status of their WildApricot membership.
+- Add/remove Joomla user to one or more other Joomla groups based upon the WildApricot groups they are a member of.
+- Copy WildApricot field values into the Joomla profile. 
+- Set a single Joomla profile variable to different values based upon if the WildApricot status is current or lapsed member.
 
 ## Configuration
 **Backend Login**
-Can WildApricot be used to authentica a Joomla backend login? YES or NO 
+Can WildApricot be used to authenticate a Joomla backend login? YES or NO 
 
 **WA Account ID**
 WildApricot account ID which can be obtained from WildApricot Dashboard >> Account  ( Numeric )
