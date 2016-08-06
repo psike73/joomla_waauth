@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="3.3" type="plugin" group="authentication">
+<extension version="3.3" type="plugin" group="authentication" method="upgrade">
     <name>Authentication - WaAuth</name>
     <author>Joomla! Documentation Project</author>
-    <creationDate>May 30, 2007</creationDate>
+    <creationDate>06 Aug, 2016</creationDate>
     <copyright>(C) 2005 - 2013 Open Source Matters. All rights reserved.</copyright>
     <license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
-    <authorEmail>ian.maclennan@help.joomla.org</authorEmail>
+    <authorEmail>waauth@psike.org</authorEmail>
     <authorUrl>www.joomla.org</authorUrl>
     <version>3.3</version>
     <description>WildApricot Authentication</description>
@@ -23,7 +23,7 @@
   <field name="wa_clientId" type="text" description="API Client ID" default="" label="WA Client ID" size="20" required="true"/> 
   <field name="wa_clientSecret" type="password" description="API Client Secret" default="" label="WA Client Secret" size="40" required="true"/> 
   <field name="wa_apiKey" type="password" description="API Key" default="" label="WA API Key" size="40" required="true"/>
-
+<field name="certificate_path" type="text" description="File path on webserver to a CA certificate for CURL (if required)" default="" label="Certificate Path" size="80" required="false"/>
 <field name="group_audax_member" type="usergroup"
         label="Member Group"
         description="Group which members are to be added to. Authentication checks membership and will add/delete this group."  
@@ -31,15 +31,64 @@
 <field name="group_audax_nonmember" type="usergroup"
         label="NonMember Group"
         description="Group which unfinancial (expired) members are to be added to. Authentication checks membership and will add/delete this group." 
-        multiple="false" /> 
-<field name="grp_audax_rideorganiser" type="usergroup"
-        label="Ride Organiser Group"
-        description="Group which ride organisers will be added to." 
-        multiple="false" /> 
-<field name="grp_audax_homologations" type="usergroup"
-        label="Audax Homologation Admins Groups"
-        description="Group which homologation admins will be added to." 
         multiple="false" />  
+<field name="groups_templates"
+	type="repeatable"
+	icon="list"
+	description="Groups to synchronise from WildApricot to Joomla"
+	label="Groups to synchronise">
+
+	<fieldset hidden="true" name="groups_templates_modal" repeat="true">
+                 <field name="grp_joomla" type="usergroup"
+                        label="Joomla Group to Add to"
+                        description="Group which WildApricot members will be added to/removed from." 
+                        multiple="false" /> 
+		<field name="grp_wildapricot"
+			label="WildApricot Group Name"
+			size="30"
+			type="text" />
+
+	</fieldset>
+</field>
+  <field name="copy_profile_variables" type="radio" default="1" description="Should WildApricot Fields be copied into the Joomla Profile" label="Copy Profile Fields">
+  <option value="0">No</option> 
+  <option value="1">Yes</option> 
+  </field>
+<field name="fields_templates"
+	type="repeatable"
+	icon="list"
+	description="Fields to copy from WildApricot to Joomla"
+	label="Fields to Copy" 
+        default='{"fld_wildapricot":["Gender","Address1","Address2","Suburb", "Postcode","Country","State","Phone Mobile"],"fld_joomla_profile":["gender","address1","address2","city","postal_code","country","region","phone"]}'>
+
+	<fieldset hidden="true" name="fields_templates_modal" repeat="true">
+		<field name="fld_wildapricot"
+			label="WildApricot Field Name"
+			size="40" 
+			type="text" />
+		<field name="fld_joomla_profile"
+			label="Joomla Profile Name"
+			size="40"
+			type="text"/>
+
+	</fieldset>
+</field>
+<field name="lifemembers_templates"
+	type="repeatable"
+	icon="list"
+	description="List of WildApricot Member Levels for which Date Due is NOT checked"
+	label="Life Member Levels" 
+        default='{"lifemember_level":["Life Membership"]}'>
+	<fieldset hidden="true" name="lifemembers_templates_modal" repeat="true">
+		<field name="lifemember_level"
+			label="Membership Level"
+			size="40" 
+			type="text" />
+	</fieldset>
+</field>
+  <field name="status_profile_variable" type="text" description="Joomla profile variable to set value for if a member or not (don't include the profile. prefix)" default="" label="Joomla Profile Status Variable" size="20" required="false"/> 
+  <field name="status_profile_member" type="text" description="Text to enter in Joomla Profile Status Variable for a current member" default="" label="Joomla Profile Status Value (Member)" size="80" required="false"/> 
+  <field name="status_profile_nonmember" type="text" description="Text to enter in Joomla Profile Status Variable for a lapsed/nonmember" default="" label="Joomla Profile Status Value (NonMember)" size="80" required="false"/> 
 
   </fieldset>
   </fields>
