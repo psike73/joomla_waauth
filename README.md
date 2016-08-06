@@ -51,7 +51,7 @@ These options are only processed if the _Copy Profile Fields_ options is set to 
 Multiple entries are allowed. Each entry contains two portions, the name of the WildApricot field and the name of the Joomla profile variable to copy the data to. The joomla variables should be entered without the _profile._ prefix. e.g. to copy WildApricot field Suburb into the profile.city variable the fields would be entered "Suburb" and "city". 
 
 **Life Member Levels**
-Membership is determined to be current based on Membership Status is not Lapsed and Renewal Date is a future date. However, if you WildApricot membership levels which do not expire the Renewal Due date is never set. This field contains the exact name of WildApricot Membership Levels which do not expire.
+This field contains the exact name(s) of WildApricot Membership Levels which do not expire. Membership is determined to be current based upon Membership Status is not Lapsed and Renewal Date is a future date. However, if you use WildApricot membership levels which do not expire the Renewal Due date is never set and those membership levels needs to be listed. 
 
 **Joomla Profile Status Variable**
 A Joomla profile variable can be set to a value if the user is a current member and a different value if the user is not a current member. This is the name Joomla profile variable which be set, excluding the _.profile_ prefix. For example, if the profile variable to be set is _profile.memberstatus_ this field should be set to _.memberstatus_. If left empty then will be ignored.
